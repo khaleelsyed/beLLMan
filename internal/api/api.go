@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -18,7 +19,11 @@ type APIServer struct {
 
 func (s *APIServer) Run() {
 	router := mux.NewRouter()
-	router.HandleFunc("/chats", makeHTTPHandlerFunc())
+	router.HandleFunc("/chats", makeHTTPHandlerFunc(s.ListChats))
+	router.HandleFunc("/chat/{id}", makeHTTPHandlerFunc(s.HandleChat))
+
+	log.Println("Listening for connections on ", s.listenAddr)
+	http.ListenAndServe(s.listenAddr, router)
 }
 
 func makeHTTPHandlerFunc(f apiFunc) http.HandlerFunc {
@@ -31,9 +36,17 @@ func makeHTTPHandlerFunc(f apiFunc) http.HandlerFunc {
 
 func WriteJSON(w http.ResponseWriter, status int, v any) error {
 	w.Header().Set("Content-Type", "application/json")
+
+	err, errFound := v.(error)
+	if errFound && status < 400 {
+		status = http.StatusInternalServerError
+	}
+
 	w.WriteHeader(status)
 
-	if err, errFound := v.(error); errFound {
+	// TODO: See if this is necessary, and if the below return will suffice?
+	// Is there actually any difference in the output between this and the latter?
+	if errFound {
 		return json.NewEncoder(w).Encode(err)
 	}
 

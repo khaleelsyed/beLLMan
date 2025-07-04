@@ -9,13 +9,13 @@ import (
 type MockStorage struct{}
 
 var allChats map[int]types.Chat = map[int]types.Chat{
-	1: types.Chat{
+	1: {
 		ID:         1,
 		Title:      "Python Tutor",
 		UpdatedAt:  time.Date(2025, 07, 02, 23, 55, 00, 00, time.UTC),
 		MessageIDs: []int{1, 2, 3},
 	},
-	2: types.Chat{
+	2: {
 		ID:         2,
 		Title:      "Science Expertise",
 		UpdatedAt:  time.Date(2025, 07, 03, 23, 55, 00, 00, time.UTC),
@@ -71,7 +71,10 @@ func (s *MockStorage) ListChats() ([]types.Chat, error) {
 }
 
 func (s *MockStorage) GetChat(chatID int) (types.FullChat, error) {
-	chat := allChats[chatID]
+	chat, ok := allChats[chatID]
+	if !ok {
+		return types.FullChat{}, &types.ErrChatNotFound{ChatID: chatID}
+	}
 
 	messages := make([]types.Message, 3)
 	for _, messageID := range chat.MessageIDs {
@@ -84,4 +87,12 @@ func (s *MockStorage) GetChat(chatID int) (types.FullChat, error) {
 		UpdatedAt: chat.UpdatedAt,
 		Messages:  messages,
 	}, nil
+}
+
+func (s *MockStorage) Init() error {
+	return nil
+}
+
+func NewMockStorage() (*MockStorage, error) {
+	return &MockStorage{}, nil
 }
