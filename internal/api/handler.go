@@ -38,7 +38,7 @@ func (s *APIServer) GetChat(w http.ResponseWriter, r *http.Request) error {
 	chat, err := s.storage.GetChat(chatID)
 	if err != nil {
 		if errors.As(err, &nf) {
-			return WriteJSON(w, http.StatusNotFound, nf)
+			return WriteJSON(w, http.StatusNotFound, nf.Error())
 		}
 		return WriteJSON(w, http.StatusInternalServerError, err)
 	}
