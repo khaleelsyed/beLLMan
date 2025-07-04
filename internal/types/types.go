@@ -3,14 +3,22 @@ package types
 import "time"
 
 type Chat struct {
-	ID        int       `json:"id"`
-	Title     string    `json:"title"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Messages  []Message `json:"messages"`
+	ID         int       `json:"id" validate:"required"`
+	Title      string    `json:"title" validate:"required"`
+	UpdatedAt  time.Time `json:"updated_at" validate:"required"`
+	MessageIDs []int     `json:"message_ids" validate:"required"`
 }
 
 type Message struct {
-	Role    Role      `json:"role"`
-	Content string    `json:"content"`
-	Sent    time.Time `json:"sent"`
+	ID      int       `json:"id" validate:"required"`
+	Role    Role      `json:"role" validate:"required"`
+	Content string    `json:"content" validate:"required"`
+	Sent    time.Time `json:"sent" validate:"required"`
+}
+
+type FullChat struct {
+	ID        int       `json:"id" validate:"required"`
+	Title     string    `json:"title" validate:"required"`
+	UpdatedAt time.Time `json:"updated_at" validate:"required"`
+	Messages  []Message `json:"messages" validate:"required"`
 }
