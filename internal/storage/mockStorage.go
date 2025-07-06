@@ -63,9 +63,9 @@ var allMessages map[int]types.Message = map[int]types.Message{
 }
 
 func (s *MockStorage) ListChats() ([]types.Chat, error) {
-	chats := make([]types.Chat, 2)
-	for _, v := range allChats {
-		chats = append(chats, v)
+	chats := make([]types.Chat, len(allChats))
+	for i, v := range allChats {
+		chats[i-1] = v
 	}
 	return chats, nil
 }
@@ -76,9 +76,9 @@ func (s *MockStorage) GetChat(chatID int) (types.FullChat, error) {
 		return types.FullChat{}, &types.ErrChatNotFound{ChatID: chatID}
 	}
 
-	messages := make([]types.Message, 3)
-	for _, messageID := range chat.MessageIDs {
-		messages = append(messages, allMessages[messageID])
+	messages := make([]types.Message, len(chat.MessageIDs))
+	for i, messageID := range chat.MessageIDs {
+		messages[i-1] = allMessages[messageID]
 	}
 
 	return types.FullChat{
