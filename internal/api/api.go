@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/khaleelsyed/beLLMan/internal/storage"
 )
@@ -21,6 +23,11 @@ func (s *APIServer) Run() {
 	router := mux.NewRouter()
 	router.HandleFunc("/chats", makeHTTPHandlerFunc(s.ListChats))
 	router.HandleFunc("/chat/{id}", makeHTTPHandlerFunc(s.HandleChat))
+
+	allowedOrigins := handlers.AllowedOrigins([]string{os.Getenv("CORS_ALLOWED_SINGLE_ORIGIN")})
+	allowedMethods := handlers.AllowedMethods([]string{http.MethodGet, http.MethodPost})
+	allowedHeaders := handlers.AllowedHeaders([]string{"Content-Type", "Authorization"})
+	router.Use(handlers.CORS(allowedOrigins, allowedMethods, allowedHeaders))
 
 	log.Println("Listening for connections on ", s.listenAddr)
 	http.ListenAndServe(s.listenAddr, router)
