@@ -78,7 +78,7 @@ func (s *MockStorage) GetChat(chatID int) (types.FullChat, error) {
 
 	messages := make([]types.Message, len(chat.MessageIDs))
 	for i, messageID := range chat.MessageIDs {
-		messages[i-1] = allMessages[messageID]
+		messages[i] = allMessages[messageID]
 	}
 
 	return types.FullChat{

@@ -103,8 +103,8 @@ func TestMockStoreGetChat(t *testing.T) {
 			continue
 		}
 
-		if messagesEqual(result, test.expectedChat) {
-			t.Errorf("Expected chat %d to match, but got %+v", test.chatID, result)
+		if !fullChatEqual(result, test.expectedChat) {
+			t.Errorf("Expected chat %d to match, but got %+v. Expected %+v", test.chatID, result, test.expectedChat)
 		}
 	}
 }
