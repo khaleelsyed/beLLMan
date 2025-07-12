@@ -22,12 +22,11 @@ func setupMockStorage() (*MockStorage, error) {
 func TestMockStoreListChats(t *testing.T) {
 	expectedResult := []types.Chat{
 		{
-			ID:         1,
-			Title:      "Python Tutor",
-			UpdatedAt:  time.Date(2025, 07, 02, 23, 55, 00, 00, time.UTC),
-			MessageIDs: []int{1, 2, 3},
+			ID:        1,
+			Title:     "Python Tutor",
+			UpdatedAt: time.Date(2025, 07, 02, 23, 55, 00, 00, time.UTC),
 		},
-		{ID: 2, Title: "Science Expertise", UpdatedAt: time.Date(2025, 07, 03, 23, 55, 00, 00, time.UTC), MessageIDs: []int{4, 5, 6}},
+		{ID: 2, Title: "Science Expertise", UpdatedAt: time.Date(2025, 07, 03, 23, 55, 00, 00, time.UTC)},
 	}
 
 	storage, err := setupMockStorage()
@@ -66,20 +65,15 @@ func TestMockStoreGetChat(t *testing.T) {
 
 	tests := []struct {
 		chatID       int
-		expectedChat types.FullChat
+		expectedChat types.Chat
 		expectError  bool
 	}{
 		{
 			chatID: 1,
-			expectedChat: types.FullChat{
+			expectedChat: types.Chat{
 				ID:        1,
 				Title:     "Python Tutor",
 				UpdatedAt: time.Date(2025, 07, 02, 23, 55, 00, 00, time.UTC),
-				Messages: []types.Message{
-					allMessages[1],
-					allMessages[2],
-					allMessages[3],
-				},
 			},
 			expectError: false,
 		},
@@ -103,7 +97,7 @@ func TestMockStoreGetChat(t *testing.T) {
 			continue
 		}
 
-		if !fullChatEqual(result, test.expectedChat) {
+		if !chatsEqual(result, test.expectedChat) {
 			t.Errorf("Expected chat %d to match, but got %+v. Expected %+v", test.chatID, result, test.expectedChat)
 		}
 	}
