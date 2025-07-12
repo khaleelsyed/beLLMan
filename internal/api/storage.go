@@ -1,4 +1,4 @@
-package storage
+package api
 
 import "github.com/khaleelsyed/beLLMan/internal/types"
 

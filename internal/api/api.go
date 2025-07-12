@@ -8,7 +8,6 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/khaleelsyed/beLLMan/internal/storage"
 )
 
 type apiFunc func(w http.ResponseWriter, r *http.Request) error
@@ -16,7 +15,7 @@ type APIError struct{ Error string }
 
 type APIServer struct {
 	listenAddr string
-	storage    storage.Storage
+	storage    Storage
 }
 
 func (s *APIServer) Run() {
@@ -60,7 +59,7 @@ func WriteJSON(w http.ResponseWriter, status int, v any) error {
 	return json.NewEncoder(w).Encode(v)
 }
 
-func NewAPIServer(listenAddr string, storage storage.Storage) *APIServer {
+func NewAPIServer(listenAddr string, storage Storage) *APIServer {
 	return &APIServer{
 		listenAddr: listenAddr,
 		storage:    storage,
