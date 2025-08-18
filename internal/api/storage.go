@@ -6,4 +6,5 @@ type Storage interface {
 	Init() error
 	ListChats() ([]types.Chat, error)
 	GetChat(chatID int) (types.Chat, error)
+	// CreateChat(chat types.Chat) int
 }

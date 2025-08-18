@@ -14,10 +14,6 @@ var methodNotAllowed = func(w http.ResponseWriter) error {
 }
 
 func (s *APIServer) ListChats(w http.ResponseWriter, r *http.Request) error {
-	if r.Method != http.MethodGet {
-		return methodNotAllowed(w)
-	}
-
 	chats, err := s.storage.ListChats()
 	if err != nil {
 		return err
@@ -46,10 +42,25 @@ func (s *APIServer) GetChat(w http.ResponseWriter, r *http.Request) error {
 	return WriteJSON(w, http.StatusOK, chat)
 }
 
-func (s *APIServer) HandleChat(w http.ResponseWriter, r *http.Request) error {
+func (s *APIServer) HandleChatID(w http.ResponseWriter, r *http.Request) error {
 	switch r.Method {
 	case http.MethodGet:
 		return s.GetChat(w, r)
+	default:
+		return methodNotAllowed(w)
+	}
+}
+
+func (s *APIServer) HandleCreateChat(w http.ResponseWriter, r *http.Request) error {
+	return WriteJSON(w, http.StatusNotImplemented, APIError{"This endpoint is not implemented yet"})
+}
+
+func (s *APIServer) HandleChat(w http.ResponseWriter, r *http.Request) error {
+	switch r.Method {
+	case http.MethodPost:
+		return s.HandleCreateChat(w, r)
+	case http.MethodGet:
+		return s.ListChats(w, r)
 	default:
 		return methodNotAllowed(w)
 	}

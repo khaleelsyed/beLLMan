@@ -64,6 +64,27 @@ func (s *PostresStorage) ListChats() ([]types.Chat, error) {
 	return chatsOutput, nil
 }
 
+func (s *PostresStorage) CreateChat(title string) (int, error) {
+	result, err := s.db.Query(`INSERT INTO chat (title) VALUES ($1) RETURNING (id)`, title)
+	if err != nil {
+		return -1, err
+	}
+
+	defer result.Close()
+
+	var chatID int
+
+	for result.Next() {
+
+		err := result.Scan(&chatID)
+		if err != nil {
+			return -1, err
+		}
+		break
+	}
+	return chatID, nil
+}
+
 func NewPostgresStorage() (*PostresStorage, error) {
 
 	connStr := fmt.Sprintf("user=%s dbname=%s password=%s port=%s sslmode=%s", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_DB"), os.Getenv("POSTGRES_PASSWORD"), os.Getenv("POSTGRES_PORT"), os.Getenv("POSTGRES_SSL_MODE"))

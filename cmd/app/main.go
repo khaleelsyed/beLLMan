@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/khaleelsyed/beLLMan/internal/api"
 	"github.com/khaleelsyed/beLLMan/internal/storage"
@@ -17,7 +18,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	server := api.NewAPIServer(":3000", storage)
+	server := api.NewAPIServer(os.Getenv("SERVER_LISTEN_ADDRESS"), storage)
 
 	server.Run()
 }

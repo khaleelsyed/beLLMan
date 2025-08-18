@@ -81,6 +81,10 @@ func (s *MockStorage) GetChat(chatID int) (types.Chat, error) {
 	}, nil
 }
 
+func (s *MockStorage) CreateChat(chat types.Chat) int {
+	return 3
+}
+
 func (s *MockStorage) Init() error {
 	return nil
 }

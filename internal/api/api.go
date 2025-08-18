@@ -20,8 +20,8 @@ type APIServer struct {
 
 func (s *APIServer) Run() {
 	router := mux.NewRouter()
-	router.HandleFunc("/chats", makeHTTPHandlerFunc(s.ListChats))
-	router.HandleFunc("/chat/{id}", makeHTTPHandlerFunc(s.HandleChat))
+	router.HandleFunc("/chat/{id}", makeHTTPHandlerFunc(s.HandleChatID))
+	router.HandleFunc("/chat", makeHTTPHandlerFunc(s.HandleChat))
 
 	allowedOrigins := handlers.AllowedOrigins([]string{os.Getenv("CORS_ALLOWED_SINGLE_ORIGIN")})
 	allowedMethods := handlers.AllowedMethods([]string{http.MethodGet, http.MethodPost})
@@ -29,7 +29,10 @@ func (s *APIServer) Run() {
 	router.Use(handlers.CORS(allowedOrigins, allowedMethods, allowedHeaders))
 
 	log.Println("Listening for connections on ", s.listenAddr)
-	http.ListenAndServe(s.listenAddr, router)
+
+	if err := http.ListenAndServe(s.listenAddr, router); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func makeHTTPHandlerFunc(f apiFunc) http.HandlerFunc {
